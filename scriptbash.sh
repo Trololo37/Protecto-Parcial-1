@@ -76,3 +76,55 @@ while true; do
             continue
             ;;
     esac
+
+    while true; do
+        echo "Usted está en la sección $seccion, seleccione la opción que desea utilizar:"
+        echo "1. Agregar información"
+        echo "2. Buscar"
+        echo "3. Eliminar información"
+        echo "4. Leer base de información"
+        echo "5. Volver al menú anterior"
+        read subopcion
+
+        case $subopcion in
+            1)
+                echo "Ingrese el identificador del concepto:"
+                read identificador
+                echo "Ingrese la definición:"
+                read definicion
+                echo "[$identificador] .- $definicion" >> "$archivo"
+                echo "Información agregada con éxito."
+                ;;
+
+            2)
+                echo "Ingrese el elemento a buscar:"
+                read elemento
+                grep -q "^\[$elemento\]" "$archivo"
+                if [ $? -eq 0 ]; then
+                    grep "^\[$elemento\]" "$archivo"
+                else
+                    echo "Elemento no encontrado."
+                fi
+                ;;
+
+            3)
+                echo "Ingrese el concepto a eliminar:"
+                read concepto
+                sed -i "/^\[$concepto\]/d" "$archivo"
+                echo "Información eliminada con éxito."
+                ;;
+
+            4)
+                cat "$archivo"
+                ;;
+
+            5)
+                break
+                ;;
+
+            *)
+                echo "Opción no válida"
+                ;;
+        esac
+    done
+done
